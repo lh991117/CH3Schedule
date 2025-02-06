@@ -10,23 +10,16 @@ public class Schedule extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //작성 유저명
-    @Column(nullable = false)
-    private String username;
-
     //할일 제목
     @Column(nullable = false)
-    private String toooTitle;
+    private String todoTitle;
 
     //할일 내용
     @Column(nullable = false, columnDefinition = "longtext")
-    private String todo;
+    private String todoContent;
 
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
-//
-//    public Long getId() {
-//        return id;
-//    }
+    //작성 유저명(User테이블의 고유 식별자로 대체)
+    @ManyToOne(fetch = FetchType.LAZY)//필요할 때만 User 정보를 가져올 수 있도록
+    @JoinColumn(name = "User_id", nullable = false)
+    private User user;
 }
