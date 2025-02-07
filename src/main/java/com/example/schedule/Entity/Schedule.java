@@ -1,7 +1,9 @@
 package com.example.schedule.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "Schedule")
 public class Schedule extends BaseEntity{
@@ -22,4 +24,17 @@ public class Schedule extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)//필요할 때만 User 정보를 가져올 수 있도록
     @JoinColumn(name = "User_id", nullable = false)
     private User user;
+
+    public Schedule() {
+
+    }
+
+    public Schedule(String todoTitle, String todoContent){
+        this.todoTitle=todoTitle;
+        this.todoContent=todoContent;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

@@ -51,4 +51,11 @@ public class UserService {
         //변경된 비밀번호로 비밀번호를 저장한다.
         findUser.updatePassword(newPassword);
     }
+
+    //id를 통한 유저 삭제
+    public void deleteUser(Long id){
+        User findUser=userRepository.findByIdOrElseThrow(id);
+
+        userRepository.delete(findUser);
+    }
 }
