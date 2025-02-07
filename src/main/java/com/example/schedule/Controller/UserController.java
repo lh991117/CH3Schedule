@@ -1,15 +1,14 @@
 package com.example.schedule.Controller;
 
-import com.example.schedule.Dto.UserRequestDto;
+import com.example.schedule.Dto.SignUpRequestDto;
+import com.example.schedule.Dto.SignUpResponseDto;
+import com.example.schedule.Dto.UpdatePasswordRequestDto;
 import com.example.schedule.Dto.UserResponseDto;
 import com.example.schedule.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -17,16 +16,32 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    //유저 CRUD의 C
+    //유저 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
-        UserResponseDto userResponseDto=
+    public ResponseEntity<SignUpResponseDto> signup(@RequestBody SignUpRequestDto signUpRequestDto) {
+        SignUpResponseDto signupResponseDto=
                 userService.signUp(
-                        userRequestDto.getUsername(),
-                        userRequestDto.getPassword(),
-                        userRequestDto.getEmail()
+                        signUpRequestDto.getUsername(),
+                        signUpRequestDto.getPassword(),
+                        signUpRequestDto.getEmail()
                 );
 
-        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(signupResponseDto, HttpStatus.CREATED);
+    }
+
+    //id를 통한 유저 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> findById(@PathVariable Long id){
+        UserResponseDto userResponseDto=userService.findById(id);
+
+        return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+    }
+
+    //id를 통한 비밀번호 변경
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UpdatePasswordRequestDto requestDto) {
+        userService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
