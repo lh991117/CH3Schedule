@@ -1,6 +1,7 @@
 package com.example.schedule.Service;
 
 import com.example.schedule.Dto.ScheduleResponseDto;
+import com.example.schedule.Dto.ScheduleWithUsernameResponseDto;
 import com.example.schedule.Entity.Schedule;
 import com.example.schedule.Entity.User;
 import com.example.schedule.Repository.ScheduleRepository;
@@ -28,11 +29,19 @@ public class ScheduleService {
         return new ScheduleResponseDto(schedule.getId(), schedule.getTodoTitle(), schedule.getTodoContent());
     }
 
-    //저장된 일정을 조회하는 메서드
+    //저장된 일정들을 조회하는 메서드
     public List<ScheduleResponseDto> findAll(){
         return scheduleRepository.findAll()
                 .stream()
                 .map(ScheduleResponseDto::toDto)
                 .toList();
+    }
+
+    //저장된 일정 중 조회하고 싶은 일정을 조회하는 메서드
+    public ScheduleWithUsernameResponseDto findById(Long id){
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        User writer = findSchedule.getUser();
+
+        return new ScheduleWithUsernameResponseDto(findSchedule.getTodoTitle(), findSchedule.getTodoContent(), writer.getUsername());
     }
 }

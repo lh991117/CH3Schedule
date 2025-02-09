@@ -2,6 +2,7 @@ package com.example.schedule.Controller;
 
 import com.example.schedule.Dto.CreateScheduleRequestDto;
 import com.example.schedule.Dto.ScheduleResponseDto;
+import com.example.schedule.Dto.ScheduleWithUsernameResponseDto;
 import com.example.schedule.Service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,13 @@ public class ScheduleController {
         List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAll();
 
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
+    }
+
+    //저장된 일정을 id를 통해서 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleWithUsernameResponseDto> findById(@PathVariable Long id){
+        ScheduleWithUsernameResponseDto SWUResponseDto = scheduleService.findById(id);
+
+        return new ResponseEntity<>(SWUResponseDto, HttpStatus.OK);
     }
 }
