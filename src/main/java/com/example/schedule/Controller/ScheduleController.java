@@ -6,10 +6,9 @@ import com.example.schedule.Service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/schedules")
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
+    //일정을 저장
     @PostMapping
     public ResponseEntity<ScheduleResponseDto> save(@RequestBody CreateScheduleRequestDto requestDto){
         ScheduleResponseDto scheduleResponseDto=
@@ -27,5 +27,13 @@ public class ScheduleController {
                 );
 
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
+    }
+
+    //저장된 일정을 조회
+    @GetMapping
+    public ResponseEntity<List<ScheduleResponseDto>> findAll(){
+        List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAll();
+
+        return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
 }
