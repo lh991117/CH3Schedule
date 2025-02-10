@@ -34,6 +34,11 @@ public class Schedule extends BaseEntity{
         this.todoContent=todoContent;
     }
 
+    public void updateSchedule(String todoTitle, String todoContent){
+        this.todoTitle=todoTitle;
+        this.todoContent=todoContent;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }

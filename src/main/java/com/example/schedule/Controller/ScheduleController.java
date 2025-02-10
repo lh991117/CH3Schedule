@@ -3,6 +3,7 @@ package com.example.schedule.Controller;
 import com.example.schedule.Dto.CreateScheduleRequestDto;
 import com.example.schedule.Dto.ScheduleResponseDto;
 import com.example.schedule.Dto.ScheduleWithUsernameResponseDto;
+import com.example.schedule.Dto.UpdateScheduleRequestDto;
 import com.example.schedule.Service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,21 @@ public class ScheduleController {
         ScheduleWithUsernameResponseDto SWUResponseDto = scheduleService.findById(id);
 
         return new ResponseEntity<>(SWUResponseDto, HttpStatus.OK);
+    }
+    
+    //ID를 통해서 일정 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> update(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto requestDto){
+        scheduleService.updateSchedule(id, requestDto.getTodoTitle(), requestDto.getTodoContent());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //ID를 통해서 일정 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> delete(@PathVariable Long id){
+        scheduleService.deleteSchedule(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
