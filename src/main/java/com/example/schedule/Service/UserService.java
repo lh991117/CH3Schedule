@@ -1,9 +1,13 @@
 package com.example.schedule.Service;
 
+import com.example.schedule.Dto.LoginRequestDto;
+import com.example.schedule.Dto.LoginResponseDto;
 import com.example.schedule.Dto.SignUpResponseDto;
 import com.example.schedule.Dto.UserResponseDto;
 import com.example.schedule.Entity.User;
 import com.example.schedule.Repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,5 +61,42 @@ public class UserService {
         User findUser=userRepository.findByIdOrElseThrow(id);
 
         userRepository.delete(findUser);
+    }
+
+    //회원가입
+    @Transactional
+    public String registerUser(String email, String password, String username) {
+        if(userRepository.findUserByEmail(email).isPresent()){
+            return "Already use Email";
+        }
+
+        User user = new User(username, email, password);
+        userRepository.save(user);
+
+        return "Success";
+    }
+
+
+    //이메일을 통해서 유저 로그인
+    public LoginResponseDto login(LoginRequestDto requestDto, HttpServletRequest httpRequest) {
+        User user=userRepository.findUserByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword())
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong email or password"));
+
+        //세션에 사용자 ID 저장
+        HttpSession session=httpRequest.getSession(true);
+        session.setAttribute("user", user.getId());
+
+        //세션 ID를 쿠키로 설정
+        return new LoginResponseDto(user.getId());
+    }
+
+    //로그아웃(세션과 쿠키 삭제)
+    public void logout(HttpServletRequest httpRequest) {
+        //현제 세션을 가져온다.(없으면 null)
+        HttpSession session=httpRequest.getSession(false);
+        if(session!=null){
+            //세션을 삭제한다.
+            session.invalidate();
+        }
     }
 }

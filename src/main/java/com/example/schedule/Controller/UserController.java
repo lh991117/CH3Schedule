@@ -1,10 +1,10 @@
 package com.example.schedule.Controller;
 
-import com.example.schedule.Dto.SignUpRequestDto;
-import com.example.schedule.Dto.SignUpResponseDto;
-import com.example.schedule.Dto.UpdatePasswordRequestDto;
-import com.example.schedule.Dto.UserResponseDto;
+import com.example.schedule.Dto.*;
 import com.example.schedule.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +51,28 @@ public class UserController {
         userService.deleteUser(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //회원가입
+    @PostMapping("/register")
+    public String register(@RequestParam String email,
+                           @RequestParam String password,
+                           @RequestParam String username) {
+        return userService.registerUser(email, password, username);
+    }
+
+    //로그인
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto requestDto,
+                                  HttpServletRequest httpRequest) {
+        LoginResponseDto responseDto=userService.login(requestDto, httpRequest);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    //로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        userService.logout(httpRequest);
+        return ResponseEntity.ok("logout");
     }
 }
