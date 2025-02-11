@@ -1,5 +1,6 @@
 package com.example.schedule.Service;
 
+import com.example.schedule.Config.PasswordEncoder;
 import com.example.schedule.Dto.LoginRequestDto;
 import com.example.schedule.Dto.LoginResponseDto;
 import com.example.schedule.Dto.SignUpResponseDto;
@@ -21,10 +22,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //유저 회원가입
     public SignUpResponseDto signUp(String username, String password, String email) {
-        User user=new User(username, email, password);
+        String hashedPassword = passwordEncoder.encode(password);//비밀번호 해싱
+        User user=new User(username, email, hashedPassword);
         User savedUser=userRepository.save(user);
         return new SignUpResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
     }
@@ -71,6 +74,7 @@ public class UserService {
             return "Already use Email";
         }
 
+//        String hashedPassword = passwordEncoder.encode(password);//비밀번호 해싱
         User user = new User(username, email, password);
         userRepository.save(user);
 
@@ -83,6 +87,12 @@ public class UserService {
 
         User user=userRepository.findUserByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword())
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong email or password"));
+
+        //입력한 비밀번호와 DB에 저장된 암호화된 비밀번호 비교
+//        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
+//            System.out.println("error");
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
+//        }
 
         //세션에 사용자 ID 저장
         session.setAttribute("user", user.getId());
