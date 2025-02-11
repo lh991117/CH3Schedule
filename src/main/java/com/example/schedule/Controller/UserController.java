@@ -2,8 +2,8 @@ package com.example.schedule.Controller;
 
 import com.example.schedule.Dto.*;
 import com.example.schedule.Service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -63,16 +63,15 @@ public class UserController {
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto requestDto,
-                                  HttpServletRequest httpRequest) {
-        LoginResponseDto responseDto=userService.login(requestDto, httpRequest);
-        return ResponseEntity.ok(responseDto);
+    public LoginResponseDto login(@Valid @RequestBody LoginRequestDto requestDto,
+                                                  HttpSession session,
+                                                  HttpServletResponse response) {
+        return userService.login(requestDto, session, response);
     }
 
     //로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        userService.logout(httpRequest);
-        return ResponseEntity.ok("logout");
+    public String logout(HttpSession session, HttpServletResponse response) {
+        return userService.logout(session, response);
     }
 }

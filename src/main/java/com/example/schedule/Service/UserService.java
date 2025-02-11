@@ -6,7 +6,8 @@ import com.example.schedule.Dto.SignUpResponseDto;
 import com.example.schedule.Dto.UserResponseDto;
 import com.example.schedule.Entity.User;
 import com.example.schedule.Repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -78,25 +79,34 @@ public class UserService {
 
 
     //이메일을 통해서 유저 로그인
-    public LoginResponseDto login(LoginRequestDto requestDto, HttpServletRequest httpRequest) {
+    public LoginResponseDto login(LoginRequestDto requestDto, HttpSession session, HttpServletResponse response) {
+
         User user=userRepository.findUserByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword())
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong email or password"));
 
         //세션에 사용자 ID 저장
-        HttpSession session=httpRequest.getSession(true);
         session.setAttribute("user", user.getId());
 
         //세션 ID를 쿠키로 설정
+        Cookie cookie = new Cookie("JSESSIONID", session.getId());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return new LoginResponseDto(user.getId());
     }
 
     //로그아웃(세션과 쿠키 삭제)
-    public void logout(HttpServletRequest httpRequest) {
-        //현제 세션을 가져온다.(없으면 null)
-        HttpSession session=httpRequest.getSession(false);
-        if(session!=null){
-            //세션을 삭제한다.
-            session.invalidate();
-        }
+    public String logout(HttpSession session, HttpServletResponse response) {
+        //세션 삭제
+        session.invalidate();
+
+        //쿠키 삭제
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setMaxAge(0);//setmaxage: 쿠키의 유효시간을 나타내는 메서드로 0으로 설정하면 쿠키를 삭제한다.
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "Logout Success";
     }
 }
