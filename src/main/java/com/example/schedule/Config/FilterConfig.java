@@ -11,7 +11,7 @@ public class FilterConfig {
     public FilterRegistrationBean<SessionValidationFilter> sessionValidationFilter() {
         FilterRegistrationBean<SessionValidationFilter> registrationBean=new FilterRegistrationBean<>();
         registrationBean.setFilter(new SessionValidationFilter());
-        registrationBean.addUrlPatterns("/users/*");
+        registrationBean.addUrlPatterns("/users/control/*");
         registrationBean.setOrder(1);
 
         return registrationBean;

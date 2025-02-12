@@ -21,7 +21,7 @@ public class SessionValidationFilter implements Filter {
         String path = httpRequest.getRequestURI();
 
         //회원가입과 로그인 요청을 필터에서 제외
-        if(path.startsWith("/users/signup") || path.startsWith("/users/register") || path.startsWith("/users/login") || path.startsWith("/users/logout")) {
+        if(path.startsWith("/users/control/register") || path.startsWith("/users/control/login")) {
             chain.doFilter(request, response);
             return;
         }
