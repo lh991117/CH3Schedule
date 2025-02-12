@@ -74,8 +74,8 @@ public class UserService {
             return "Already use Email";
         }
 
-//        String hashedPassword = passwordEncoder.encode(password);//비밀번호 해싱
-        User user = new User(username, email, password);
+        String hashedPassword = passwordEncoder.encode(password);//비밀번호 해싱
+        User user = new User(username, email, hashedPassword);
         userRepository.save(user);
 
         return "Success";
@@ -84,15 +84,15 @@ public class UserService {
 
     //이메일을 통해서 유저 로그인
     public LoginResponseDto login(LoginRequestDto requestDto, HttpSession session, HttpServletResponse response) {
-
-        User user=userRepository.findUserByEmailAndPassword(requestDto.getEmail(), requestDto.getPassword())
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong email or password"));
+        //입력 받은 이메일이 잘못된 경우 401에러 출력
+        User user=userRepository.findUserByEmail(requestDto.getEmail())
+                        .orElseThrow(()->new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Wrong email"));
 
         //입력한 비밀번호와 DB에 저장된 암호화된 비밀번호 비교
-//        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
-//            System.out.println("error");
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
-//        }
+        if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
+            System.out.println("error");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
+        }
 
         //세션에 사용자 ID 저장
         session.setAttribute("user", user.getId());
