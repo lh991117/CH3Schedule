@@ -15,5 +15,30 @@
 |POST|/users/control/login|로그인|없음|{"email": "test@email.com", "password": "1234"}|{"id": 1}|200 OK|
 |POST|/users/logout|로그아웃|없음|없음|"Logout Success"|200 OK|
 
+## ERD
+![image](https://github.com/user-attachments/assets/d59eaa80-e600-4d3f-abf7-e9e34f41be96)
 
-
+## SQL
+1. schedule
+   create table schedule
+   (
+   created_date  datetime(6)  null,
+   id            bigint auto_increment
+   primary key,
+   modified_date datetime(6)  null,
+   user_id       bigint       not null,
+   todo_content  longtext     not null,
+   todo_title    varchar(255) not null,
+   constraint FKa50n59y1j4a6qwa42p8jiguds
+   foreign key (user_id) references user (id)
+   );
+2. user
+   create table user
+   (
+   created_date  datetime(6)  null,
+   id            bigint auto_increment
+   primary key,
+   modified_date datetime(6)  null,
+   email         varchar(255) not null,
+   username      varchar(255) not null
+   );
