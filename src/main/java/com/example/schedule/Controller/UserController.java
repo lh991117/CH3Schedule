@@ -54,7 +54,7 @@ public class UserController {
     }
 
     //회원가입
-    @PostMapping("/register")
+    @PostMapping("/control/register")
     public String register(@RequestParam String email,
                            @RequestParam String password,
                            @RequestParam String username) {
@@ -62,7 +62,7 @@ public class UserController {
     }
 
     //로그인
-    @PostMapping("/login")
+    @PostMapping("/control/login")
     public LoginResponseDto login(@Valid @RequestBody LoginRequestDto requestDto,
                                                   HttpSession session,
                                                   HttpServletResponse response) {
