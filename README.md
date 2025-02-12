@@ -20,7 +20,8 @@
 
 ## SQL
 1. schedule
-   create table schedule
+```sql
+create table schedule
    (
    created_date  datetime(6)  null,
    id            bigint auto_increment
@@ -32,8 +33,10 @@
    constraint FKa50n59y1j4a6qwa42p8jiguds
    foreign key (user_id) references user (id)
    );
+```
 2. user
-   create table user
+```sql
+create table user
    (
    created_date  datetime(6)  null,
    id            bigint auto_increment
@@ -42,3 +45,4 @@
    email         varchar(255) not null,
    username      varchar(255) not null
    );
+```
